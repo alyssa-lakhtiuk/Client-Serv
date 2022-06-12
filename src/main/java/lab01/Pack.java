@@ -92,4 +92,14 @@ public class Pack {
                 .array();
         this.wCrc16Last = CRC16.crc16(headerWithCrc, 0, headerWithCrc.length);
     }
+    @Override
+    public String toString(){
+        return (
+                "Client app number: " + this.getbSrc() +
+                        "\nMessage number: " + this.getbPktId() +
+                        "\nPack length: " + this.getwLen() +
+                        "\nMessage: " + new String(this.getbMsq().getMessageBMsq()) +
+                        "\ncType: " + this.getbMsq().getMessageCType() +
+                        "\nUser id: " + this.getbMsq().getMessageBUserId());
+    }
 }

@@ -26,13 +26,6 @@ public class Main {
         System.out.println("Package to send: "+Hex.encodeHexString(respond));
 
         Pack received = new Pack(respond, cr);
-        System.out.println(
-                "Client app number: " + received.getbSrc() +
-                "\nMessage number: " + received.getbPktId() +
-                "\nPack length: " + received.getwLen() +
-                "\nMessage: " + new String(received.getbMsq().getMessageBMsq()) +
-                "\ncType: " + received.getbMsq().getMessageCType() +
-                "\nUser id: " + received.getbMsq().getMessageBUserId());
-
+        System.out.println(received.toString());
     }
 }
