@@ -1,5 +1,8 @@
-package lab02;
+package lab02.entity;
 
+
+import lab02.crypting.CRC16;
+import lab02.crypting.Cryptor;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -17,7 +20,7 @@ public class Pack {
 
     private byte bMagic = 0x13;
     private byte bSrc;
-    private static long bPktId;
+    private long bPktId;
     private int wLen;
     private short wCrc16;
     private Message bMsq;
@@ -34,21 +37,14 @@ public class Pack {
         return wLen;
     }
 
-    public short getwCrc16() {
-        return wCrc16;
-    }
-
     public Message getbMsq() {
         return bMsq;
     }
 
-    public short getwCrc16Last() {
-        return wCrc16Last;
-    }
-
     private short wCrc16Last;
 
-    public Pack(byte[] bytes) throws IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException {
+    public Pack(byte[] bytes) throws IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException,
+            NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException {
         // дешифрує
         if (bytes[0] != bMagic) {
             throw new IllegalArgumentException("Invalid magic byte");
@@ -71,7 +67,8 @@ public class Pack {
     }
 
 
-    public Pack(byte bSrc, long bPktId, int wLen, Message bMsq) throws IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException {
+    public Pack(byte bSrc, long bPktId, int wLen, Message bMsq) throws IllegalBlockSizeException, BadPaddingException,
+            NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException {
         // шифрує
         this.bSrc = bSrc;
         this.bPktId = bPktId;
@@ -100,7 +97,8 @@ public class Pack {
         this.wCrc16Last = CRC16.crc16(headerWithCrc, 0, headerWithCrc.length);
     }
 
-    public byte[] packToBytes() throws IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException {
+    public byte[] packToBytes() throws IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException,
+            NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException {
         Message message = getbMsq();
         byte[] header = ByteBuffer.allocate(2 + Long.BYTES + Integer.BYTES + Integer.BYTES + Integer.BYTES)
                 .put(this.bMagic)
@@ -123,7 +121,7 @@ public class Pack {
                 .put(Cryptor.encipher(bMsq.getMessageBMsq()))
                 .array();
         this.wCrc16Last = CRC16.crc16(headerWithCrc, 0, headerWithCrc.length);
-        byte[] finalPackBytes = ByteBuffer.allocate(2 + Long.BYTES + Integer.BYTES + Integer.BYTES + Integer.BYTES +
+        return ByteBuffer.allocate(2 + Long.BYTES + Integer.BYTES + Integer.BYTES + Integer.BYTES +
                         Short.BYTES * 2 + Cryptor.encipher(bMsq.getMessageBMsq()).length)
                 .put(this.bMagic)
                 .put(this.bSrc)
@@ -135,7 +133,6 @@ public class Pack {
                 .put(Cryptor.encipher(bMsq.getMessageBMsq()))
                 .putShort(this.wCrc16Last)
                 .array();
-        return finalPackBytes;
     }
 
     @Override
@@ -143,7 +140,7 @@ public class Pack {
         return (
                 "Client app number: " + this.getbSrc() +
                         "\nMessage number: " + this.getbPktId() +
-                        "\nPack length: " + this.getwLen() +
+                        "\nMessage length: " + this.getwLen() +
                         "\nMessage: " + new String(this.getbMsq().getMessageBMsq()) +
                         "\ncType: " + this.getbMsq().getMessageCType() +
                         "\nUser id: " + this.getbMsq().getMessageBUserId());

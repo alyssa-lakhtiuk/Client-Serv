@@ -1,4 +1,6 @@
-package lab02;
+package lab02.entity;
+
+import lab02.crypting.Cryptor;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -14,7 +16,7 @@ public class Message {
     private int bUserId;
     private byte[] bMsq;
 
-    enum cTypes{
+    public enum cTypes{
         GetProductQuantity,
         RemoveProducts,
         AddProducts,
@@ -34,7 +36,8 @@ public class Message {
         return bMsq;
     }
 
-    public Message(ByteBuffer buffer, int wLen) throws IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException {
+    public Message(ByteBuffer buffer, int wLen) throws IllegalBlockSizeException, BadPaddingException,
+            NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException {
         // gets encoded bytes and decode
         this.cType = buffer.order(ByteOrder.BIG_ENDIAN).getInt();
         this.bUserId = buffer.order(ByteOrder.BIG_ENDIAN).getInt();
@@ -43,7 +46,8 @@ public class Message {
         this.bMsq = Cryptor.decipher(encodedMessage);
     }
 
-    public Message(int cType, int bUserId, byte[] message) throws IllegalBlockSizeException, BadPaddingException {
+    public Message(int cType, int bUserId, byte[] message) throws IllegalBlockSizeException, BadPaddingException,
+            InvalidAlgorithmParameterException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         this.cType = cType;
         this.bUserId = bUserId;
         this.bMsq = Cryptor.decipher(message);

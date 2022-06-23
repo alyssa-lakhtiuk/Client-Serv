@@ -1,17 +1,17 @@
 package lab02;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
+import lab02.entity.Pack;
+import lab02.inOut.ResponseBuilder;
+import lab02.network.Network;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class Processor implements Runnable{
-    private static ExecutorService service = Executors.newFixedThreadPool(6);
+    private static ExecutorService service = Executors.newFixedThreadPool(4);
     private Pack pack;
     public Processor(Pack pack){
         this.pack = pack;
@@ -29,17 +29,13 @@ public class Processor implements Runnable{
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
     }
-
     @Override
     public void run() {
         try {
-            Thread.sleep(3000);
+            Thread.sleep(4000);
             InetAddress inetAddress = InetAddress.getLocalHost();
             new Network().sendMessage(ResponseBuilder.response(pack), inetAddress);
-        } catch (UnknownHostException | InterruptedException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

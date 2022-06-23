@@ -1,4 +1,4 @@
-package lab02;
+package lab02.network;
 
 import java.net.InetAddress;
 

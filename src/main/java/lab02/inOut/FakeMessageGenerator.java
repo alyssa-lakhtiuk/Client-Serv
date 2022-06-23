@@ -1,5 +1,8 @@
-package lab02;
+package lab02.inOut;
 
+import lab02.crypting.Cryptor;
+import lab02.entity.Message;
+import lab02.entity.Pack;
 import org.apache.commons.math3.random.RandomDataGenerator;
 
 import javax.crypto.BadPaddingException;
@@ -12,7 +15,8 @@ import java.util.Random;
 
 public class FakeMessageGenerator {
     final static int maxUsers = 60000;
-    public static Pack generateFakeMessage() throws IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException {
+    public static Pack generateFakeMessage() throws IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException,
+            NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException {
         Random random = new Random();
         int command = random.nextInt(Message.cTypes.values().length);
         String commandMsg = (Message.cTypes.values()[command]).toString();
@@ -20,7 +24,6 @@ public class FakeMessageGenerator {
         long leftLimit = 10L;
         long rightLimit = 100L;
         long generatedLong = new RandomDataGenerator().nextLong(leftLimit, rightLimit);
-        Pack pack = new Pack((byte)1, generatedLong, testMessage.getMessageBMsq().length, testMessage);
-        return pack;
+        return new Pack((byte)1, generatedLong, testMessage.getMessageBMsq().length, testMessage);
     }
 }

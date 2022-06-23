@@ -1,4 +1,8 @@
-package lab02;
+package lab02.inOut;
+
+import lab02.crypting.Cryptor;
+import lab02.entity.Message;
+import lab02.entity.Pack;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
