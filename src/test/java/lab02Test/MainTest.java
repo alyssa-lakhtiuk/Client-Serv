@@ -17,14 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MainTest {
     @Test
-    void checkWhether_InvalidMagicByte() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> new Pack(Hex.decodeHex("15"))
-        );
-    }
-
-    @Test
     void checkWhether_SuccessfulFinished() throws NoSuchPaddingException, NoSuchAlgorithmException {
         ExecutorService executorService = Executors.newFixedThreadPool(5);
         for(int i = 0; i < 10; i++)
