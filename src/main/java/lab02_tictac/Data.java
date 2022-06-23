@@ -14,7 +14,7 @@ public class Data {
         state=2;
     }
     public void Toi(){
-        System.out.println("Toi");
+        System.out.println("Toy");
         state=3;
     }
 }
