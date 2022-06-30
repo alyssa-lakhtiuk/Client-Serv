@@ -1,8 +1,8 @@
-package lab02.entity;
+package lab03.entity;
 
 
-import lab02.crypting.CRC16;
-import lab02.crypting.Cryptor;
+import lab03.crypting.CRC16;
+import lab03.crypting.Cryptor;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -24,6 +24,7 @@ public class Pack {
     private int wLen;
     private short wCrc16;
     private Message bMsq;
+    private short wCrc16Last;
 
     public byte getbSrc() {
         return bSrc;
@@ -40,8 +41,6 @@ public class Pack {
     public Message getbMsq() {
         return bMsq;
     }
-
-    private short wCrc16Last;
 
     public Pack(byte[] bytes) throws IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException,
             NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException {
@@ -60,7 +59,7 @@ public class Pack {
         }
         this.bMsq = new Message(buffer, this.wLen);
         this.wCrc16Last = buffer.order(ByteOrder.BIG_ENDIAN).getShort();
-        final short wCrc16LastCounted = CRC16.crc16(bytes, 0, bytes.length - 2);
+        final short wCrc16LastCounted = CRC16.crc16(bytes, 0, 2 + Long.BYTES + Integer.BYTES * 3 + Short.BYTES + wLen);
         if(wCrc16LastCounted != wCrc16Last){
             throw new IllegalArgumentException("wCrc16Last expected: " + wCrc16LastCounted + ", but get " + wCrc16Last);
         }

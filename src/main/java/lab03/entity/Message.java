@@ -1,6 +1,6 @@
-package lab02.entity;
+package lab03.entity;
 
-import lab02.crypting.Cryptor;
+import lab03.crypting.Cryptor;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;

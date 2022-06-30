@@ -1,8 +1,8 @@
-package lab02.inOut;
+package lab03.inOut;
 
-import lab02.crypting.Cryptor;
-import lab02.entity.Message;
-import lab02.entity.Pack;
+import lab03.crypting.Cryptor;
+import lab03.entity.Message;
+import lab03.entity.Pack;
 import org.apache.commons.math3.random.RandomDataGenerator;
 
 import javax.crypto.BadPaddingException;
@@ -24,6 +24,6 @@ public class FakeMessageGenerator {
         long leftLimit = 10L;
         long rightLimit = 100L;
         long generatedLong = new RandomDataGenerator().nextLong(leftLimit, rightLimit);
-        return new Pack((byte)1, generatedLong, testMessage.getMessageBMsq().length, testMessage);
-    }
+        return new Pack((byte)random.nextInt(100), generatedLong, testMessage.getMessageBMsq().length, testMessage);
+    } // example of pack we can get from user
 }
