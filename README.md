@@ -77,6 +77,7 @@ Labs for Client-server development
 
 1. StoreServerTCP та StoreClientTCP
 2. StoreServerUDP та StoreClientUDP
+
 Відповідно вони мають працювати по протоколу TCP та протоколу UDP
 
 Ви маєте запустити декілька клієнтів і один сервер та протестувати роботу.
