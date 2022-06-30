@@ -59,7 +59,7 @@ public class StoreServerUDP extends Thread {
 
             byte[] receivedMessage = receivedPack.getbMsq().getMessageBMsq();
             String receivedStr = new String(receivedMessage, StandardCharsets.UTF_8);
-            if (receivedStr == "end") {
+            if (receivedStr.equals("end")) {
                 running = false;
                 continue;
             }

@@ -22,7 +22,7 @@ public class FakeMessageGenerator {
         Random random = new Random();
         int command = random.nextInt(Message.cTypes.values().length);
         String commandMsg = (Message.cTypes.values()[command]).toString();
-        if (num == 20){
+        if (num == 40){
             commandMsg = ("end");
         }
         Message testMessage = new Message(command , random.nextInt(maxUsers), Cryptor.encipher(commandMsg.getBytes()));
