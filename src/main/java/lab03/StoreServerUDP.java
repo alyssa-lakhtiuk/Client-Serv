@@ -11,9 +11,12 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.Objects;
 
 public class StoreServerUDP extends Thread {
     private static final int Port = 1373;
@@ -42,8 +45,10 @@ public class StoreServerUDP extends Thread {
             } catch (IOException e) {
                 throw new RuntimeException("Can't receive the packet", e);
             }
+            Pack receivedPack;
             try {
-                buf = ResponseBuilder.response(new Pack(buf));
+                receivedPack = new Pack(buf);
+                buf = ResponseBuilder.response(receivedPack);
             } catch (IllegalBlockSizeException | NoSuchPaddingException | BadPaddingException | NoSuchAlgorithmException
                      | InvalidAlgorithmParameterException | InvalidKeyException e) {
                 throw new RuntimeException("Unable to set pack for response", e);
@@ -52,10 +57,9 @@ public class StoreServerUDP extends Thread {
             int port = packet.getPort();
             packet = new DatagramPacket(buf, buf.length, address, port);
 
-            String received
-                    = new String(packet.getData(), 0, packet.getLength());
-
-            if (received.equals("end")) {
+            byte[] receivedMessage = receivedPack.getbMsq().getMessageBMsq();
+            String receivedStr = new String(receivedMessage, StandardCharsets.UTF_8);
+            if (receivedStr == "end") {
                 running = false;
                 continue;
             }

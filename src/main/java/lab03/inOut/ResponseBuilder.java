@@ -12,6 +12,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 public class ResponseBuilder {
+
     public static byte[] response(Pack pack) throws IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException {
         byte[] response = ("200: OK!").getBytes();
         byte[] encipheredResponse = Cryptor.encipher(response);

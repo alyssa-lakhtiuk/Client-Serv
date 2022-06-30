@@ -33,28 +33,32 @@ public class StoreClientUDP {
 
     }
 
-    public String sendEcho() throws IOException, InvalidAlgorithmParameterException, IllegalBlockSizeException,
+    public void sendEcho() throws IOException, InvalidAlgorithmParameterException, IllegalBlockSizeException,
             NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
 
         Map<Long, byte[]> allSent = new HashMap<>();
         Map<Long, byte[]> allReceived = new HashMap<>();
+        socket.setSoTimeout(3_000);
         Pack packFromClient = FakeMessageGenerator.generateFakeMessage();
         buf = packFromClient.packToBytes();
-        DatagramPacket packet
-                = new DatagramPacket(buf, buf.length, address, Port);
+        DatagramPacket packet = new DatagramPacket(buf, buf.length, address, Port);
         socket.send(packet);
-        Pack sent = new Pack(packet.getData());
-        System.out.println("\n Message sent by client to server: \n" + sent.toString());
-        allSent.put(sent.getbPktId(), buf);
+//        Pack sent;
+//        try {
+//            sent = new Pack(packet.getData());
+//        } catch (InvalidAlgorithmParameterException | IllegalBlockSizeException |
+//                 NoSuchPaddingException | BadPaddingException | NoSuchAlgorithmException | InvalidKeyException e) {
+//            throw new RuntimeException("Unable to set pack", e);
+//        }
+        System.out.println("\n Message sent by client to server: \n" + packFromClient.toString());
+        allSent.put(packFromClient.getbPktId(), buf);
 
         packet = new DatagramPacket(buf, buf.length);
         socket.receive(packet);
         Pack rec = new Pack(packet.getData());
         System.out.println("\n Message received by client from server: \n" + rec.toString());
         allReceived.put(rec.getbPktId(), buf);
-        String received = new String(
-                packet.getData(), 0, packet.getLength());
-        return received;
+        tryToResend(allReceived, allSent);
     }
 
     private void tryToResend(Map<Long, byte[]> allReceived, Map<Long, byte[]> allSent) throws IOException {

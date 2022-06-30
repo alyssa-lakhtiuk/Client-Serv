@@ -17,11 +17,11 @@ public class Message {
     private byte[] bMsq;
 
     public enum cTypes{
-        GetProductQuantity,
+        GetProdQuantity,
         RemoveProducts,
         AddProducts,
         AddProductGroup,
-        AddProductToGroup,
+        AddProdToGroup,
         SetProductPrice
     }
     public int getMessageCType() {
