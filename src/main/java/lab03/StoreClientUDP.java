@@ -54,7 +54,11 @@ public class StoreClientUDP {
         allSent.put(packFromClient.getbPktId(), buf);
 
         packet = new DatagramPacket(buf, buf.length);
-        socket.receive(packet);
+        try {
+            socket.receive(packet);
+        } catch (SocketTimeoutException e){
+            socket.close();
+        }
         Pack rec = new Pack(packet.getData());
         System.out.println("\n Message received by client from server: \n" + rec.toString());
         allReceived.put(rec.getbPktId(), buf);
