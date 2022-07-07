@@ -1,7 +1,7 @@
-package lab03;
+package lab04;
 
-import lab03.entity.Pack;
-import lab03.inOut.FakeMessageGenerator;
+import lab04.entity.Pack;
+import lab04.inOut.FakeMessageGenerator;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;

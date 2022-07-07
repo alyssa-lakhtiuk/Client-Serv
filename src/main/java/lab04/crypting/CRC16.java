@@ -1,4 +1,4 @@
-package lab03.crypting;
+package lab04.crypting;
 
 public class CRC16 {
     static int[] table = {

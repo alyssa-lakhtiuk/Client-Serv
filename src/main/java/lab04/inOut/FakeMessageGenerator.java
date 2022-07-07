@@ -1,8 +1,8 @@
-package lab03.inOut;
+package lab04.inOut;
 
-import lab03.crypting.Cryptor;
-import lab03.entity.Message;
-import lab03.entity.Pack;
+import lab04.crypting.Cryptor;
+import lab04.entity.Message;
+import lab04.entity.Pack;
 import org.apache.commons.math3.random.RandomDataGenerator;
 
 import javax.crypto.BadPaddingException;

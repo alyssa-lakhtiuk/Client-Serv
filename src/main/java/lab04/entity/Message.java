@@ -1,6 +1,6 @@
-package lab03.entity;
+package lab04.entity;
 
-import lab03.crypting.Cryptor;
+import lab04.crypting.Cryptor;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -22,7 +22,18 @@ public class Message {
         AddProducts,
         AddProductGroup,
         AddProdToGroup,
-        SetProductPrice
+        SetProductPrice,
+        ///
+        InsertProduct,
+        DeleteProduct,
+        UpdateProduct,
+        GetProduct,
+        GetListProducts,
+        InsertCategory,
+        DeleteCategory,
+        UpdateCategory,
+        GetCategory,
+        GetListCat,
     }
     public int getMessageCType() {
         return cType;
