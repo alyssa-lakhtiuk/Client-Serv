@@ -1,6 +1,7 @@
-package lab04.entity;
+package lab04.entity.daos;
 
 import lab04.DBConnection;
+import lab04.entity.Category;
 import org.json.JSONObject;
 
 import java.sql.*;
@@ -18,6 +19,7 @@ public class CategoryDao implements IDao<Category> {
     private final String insertQuery = "insert into 'category' ('id', 'name', 'description') values (?, ?, ?);";
     private final String updateQuery = "update 'category' set name = ?, description = ?  where id = ?";
     private final String deleteQuery = "delete from 'category' where id = ?";
+    private final String dropQuery = "drop table 'category'";
 
     private final Connection connection;
 
@@ -110,19 +112,25 @@ public class CategoryDao implements IDao<Category> {
         }
     }
 
-    public JSONObject toJSONObject(List<Category> groups){
+    @Override
+    public void drop() {
+        try(final Statement statement = connection.createStatement()){
+            statement.execute(dropQuery);
+        } catch (SQLException e) {
+            throw new RuntimeException("Can't drop table", e);
+        }
+    }
+
+    public JSONObject toJSONObject(List<Category> categories){
         StringBuffer stringBuffer = new StringBuffer();
-
         stringBuffer.append("{\"list\":[");
-
-        for (Category g: groups) {
+        for (Category g: categories) {
             stringBuffer.append(g.toJSON().toString() + ", ");
         }
         if(stringBuffer.length()>9){
             stringBuffer.delete(stringBuffer.length()-2, stringBuffer.length()-1);
         }
         stringBuffer.append("]}");
-
         return new JSONObject(stringBuffer.toString());
     }
 }

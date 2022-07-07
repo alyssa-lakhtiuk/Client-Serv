@@ -1,7 +1,8 @@
-package lab04.entity;
+package lab04.entity.daos;
 
-import jakarta.persistence.*;
 import lab04.DBConnection;
+import lab04.entity.Product;
+import lab04.entity.ProductCriteriaFilter;
 import org.json.JSONObject;
 
 import java.sql.*;
@@ -20,11 +21,11 @@ public class ProductDao implements IDao<Product> {
             "'category_id' integer not null, foreign key(category_id) references category(id) " +
             "ON UPDATE CASCADE ON DELETE CASCADE);";
     private final String insertQuery = "insert into 'product'" + " ('name', 'price', 'quantity', 'description', 'category_id') values (?, ?, ?, ?, ?);";
-    private final String updateQuery = "update 'product' set name = ?, price = ?, quantity = ?, description = ?, group_id = ?  where id = ?";
+    private final String updateQuery = "update 'product' set name = ?, price = ?, quantity = ?, description = ?, category_id = ?  where id = ?";
     private final String deleteQuery = "delete from 'product' where id = ?";
+    private final String selectByIdQuery = "select * from 'product' where id = %s";
     private final String selectAllQuery = "select * from 'product'";
-
-    private EntityManager entityManager;
+    private final String dropQuery = "drop table 'product'";
     private final Connection connection;
 
     public ProductDao(DBConnection con) {
@@ -44,7 +45,7 @@ public class ProductDao implements IDao<Product> {
     public Product getById(int id) {
         try (final Statement statement = connection.createStatement()) {
 
-            final String sql = String.format("select * from 'products' where id = %s", id);
+            final String sql = String.format(selectByIdQuery, id);
             final ResultSet resultSet = statement.executeQuery(sql);
 
             Product product = new Product(
@@ -79,7 +80,7 @@ public class ProductDao implements IDao<Product> {
             }
             return products;
         } catch (SQLException e) {
-            throw new RuntimeException("Can't get list of products", e);
+            throw new RuntimeException("Can't get list of product", e);
         }
     }
 
@@ -129,19 +130,19 @@ public class ProductDao implements IDao<Product> {
         }
     }
 
-    public List<Product> listByCriteria(final int page, final int size, final ProductCriteriaFilter filter){
+    public List<Product> listByCriteria(final int p, final int s, final ProductCriteriaFilter filter){
         try(final Statement statement = connection.createStatement()){
             final String query = Stream.of(
                             in("id", filter.getIds()),
                             gte("price", filter.getFromPrice()),
                             lte("price", filter.getToPrice()),
-                            category("category_id", filter.getGroup_id())
+                            category("category_id", filter.getCategory_id())
                     )
                     .filter(Objects::nonNull)
                     .collect(Collectors.joining(" AND "));
 
             final String where = query.isEmpty() ? "" : " where "+query;
-            final String sql = String.format("select * from 'products' %s limit %s offset %s", where, size, page * size);
+            final String sql = String.format("select * from 'product' %s limit %s offset %s", where, s, p * s);
             final ResultSet resultSet = statement.executeQuery(sql);
 
             final List<Product> products = new ArrayList<>();
@@ -186,6 +187,15 @@ public class ProductDao implements IDao<Product> {
             return null;
         }
         return fieldName + " <= " + value;
+    }
+
+    @Override
+    public void drop() {
+        try(final Statement statement = connection.createStatement()){
+            statement.execute(dropQuery);
+        } catch (SQLException e) {
+            throw new RuntimeException("Can't drop table", e);
+        }
     }
 
     public JSONObject toJSONObject(List<Product> products){

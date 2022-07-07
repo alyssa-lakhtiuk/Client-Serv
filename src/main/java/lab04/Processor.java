@@ -1,6 +1,8 @@
 package lab04;
 
 import lab04.entity.*;
+import lab04.entity.daos.CategoryDao;
+import lab04.entity.daos.ProductDao;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -113,7 +115,7 @@ public class Processor {
                     filter.setIds(arrayList);
                 }
                 if(!filtr.isNull("category_id")){
-                    filter.setGroup_id(filtr.getInt("category_id"));
+                    filter.setCategory_id(filtr.getInt("category_id"));
                 }
                 if(!filtr.isNull("toPrice")){
                     filter.setToPrice(filtr.getDouble("toPrice"));

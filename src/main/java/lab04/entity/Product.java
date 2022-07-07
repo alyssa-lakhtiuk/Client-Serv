@@ -16,8 +16,8 @@ public class Product {
     private String description;
 
     public Product(int productId, int categoryId, String name, int quantity, double price, String description) {
-        this.categoryId = categoryId;
         this.productId = productId;
+        this.categoryId = categoryId;
         this.name = name;
         this.quantity = quantity;
         this.price = price;
@@ -67,7 +67,7 @@ public class Product {
     public JSONObject toJSON(){
 
         JSONObject json = new JSONObject("{"+"\"id\":"+productId+", \"name\":\""+name+
-                "\", \"price\":"+ quantity+", \"quantity\":"+quantity+
+                "\", \"price\":"+ price+", \"quantity\":"+quantity+
                 ", \"description\":\""+description+"\", \"category_id\":"+categoryId+"}");
 
         return json;

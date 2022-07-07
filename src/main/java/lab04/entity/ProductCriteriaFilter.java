@@ -8,8 +8,7 @@ public class ProductCriteriaFilter {
     private String query;
     private Double fromPrice;
     private Double toPrice;
-    private String manufacturer;
-    private Integer group_id;
+    private Integer category_id;
 
     public List<Integer> getIds() {
         return ids;
@@ -38,21 +37,12 @@ public class ProductCriteriaFilter {
     public void setToPrice(Double toPrice) {
         this.toPrice = toPrice;
     }
-
-    public String getManufacturer() {
-        return manufacturer;
+    public Integer getCategory_id() {
+        return category_id;
     }
 
-    public void setManufacturer(String manufacturer) {
-        this.manufacturer = manufacturer;
-    }
-
-    public Integer getGroup_id() {
-        return group_id;
-    }
-
-    public void setGroup_id(Integer group_id) {
-        this.group_id = group_id;
+    public void setCategory_id(Integer category_id) {
+        this.category_id = category_id;
     }
 
 }
