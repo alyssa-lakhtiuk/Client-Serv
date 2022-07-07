@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MainTest {
     private static final String dbFileName = "storeDB";
@@ -126,5 +127,88 @@ public class MainTest {
         List<Product> products = daoProduct.listByCriteria(0,10, filter);
         assertEquals(expected, products.size());
         daoProduct.drop();
+    }
+
+    @Test
+    void testDeleteProduct(){
+        Product product1 = new Product(
+                1,
+                1,
+                "grechka",
+                50,
+                61.5,
+                "very high quality grechka");
+        Product product2 = new Product(
+                1,
+                1,
+                "manka",
+                15,
+                75.3,
+                "very high quality manka");
+
+        ProductDao  daoProduct = new ProductDao(new DBConnection(dbFileName));
+        daoProduct.insert(product1);
+        daoProduct.insert(product2);
+        daoProduct.delete(1);
+        assertThrows(
+                java.lang.RuntimeException.class,
+                () -> daoProduct.getById(1)
+        );
+        daoProduct.drop();
+    }
+
+    @Test
+    void testDeleteCategory(){
+        Category category1 = new Category(1,
+                "krupy",
+                "different krupy");
+        Category category2 = new Category(2,
+                "voda",
+                "mineralna");
+
+        CategoryDao  daoCategory = new CategoryDao(new DBConnection(dbFileName));
+        daoCategory.insert(category1);
+        daoCategory.insert(category2);
+        daoCategory.delete(1);
+        assertThrows(
+                java.lang.RuntimeException.class,
+                () -> daoCategory.getById(1)
+        );
+        daoCategory.drop();
+    }
+
+    @Test
+    void testInsertCategoryFail(){
+        Category category1 = new Category(1,
+                "krupy",
+                "different krupy");
+        Category category2 = new Category(2,
+                "krupy",// Same category name
+                "different");
+
+        CategoryDao  daoCategory = new CategoryDao(new DBConnection(dbFileName));
+        daoCategory.insert(category1);
+        assertThrows(
+                java.lang.RuntimeException.class,
+                () -> daoCategory.insert(category2)
+        );
+        daoCategory.drop();
+    }
+
+    @Test
+    void testUpdateCategoryAndGet(){
+
+        Category category1 = new Category(1,
+                "krupy",
+                "different krupy");
+        Category category2 = new Category(1,
+                "voda",
+                "mineralna");
+        CategoryDao daoGroup = new CategoryDao(new DBConnection(dbFileName));
+        daoGroup.insert(category1);
+        daoGroup.update(category2, category1.getCategoryId());
+        Category updatedGroup = daoGroup.getById(1);
+        assertEquals(category2.toString(), updatedGroup.toString());
+        daoGroup.drop();
     }
 }
