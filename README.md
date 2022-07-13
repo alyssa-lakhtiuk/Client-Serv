@@ -88,3 +88,57 @@ Labs for Client-server development
 * при передачі даних по TCP проблемою є обрив зв'язку між клієнтом і сервером. В разі проблем сервер буде перевантажений, але ваш клієнт має коректно оброблювати дану ситуацію:
   * не відправляти пакети поки сервер не відновить роботу
   * розуміти, що сервер зараз не доступний і пробувати відновити з'єднання
+  
+
+### Lab04
+Створити сервіс, що буде робити операції:
+
+* Create
+* Read
+* Update
+* Delete
+* List by criteria
+по роботі з товарами нашого складу.
+
+Протестувати роботу даного сервіса з використанням JUnit тестів.
+
+### Lab05
+  Ви маєте створити HTTP Сервер, що надає світу наступний REST API:
+
+  /login
+
+* method POST
+* params: login, password in MD5 encoding
+* responses:
+ * 200 Ok and Uniq token
+ * 401 Unauthorized
+
+Всі методи api мають викликатися з Auth токеном, що передається в хедерах запиту. Токен має бути перевірений на валідність. Якщо токен не валідний - повертати 403 помилку. Пропонується використати JWT:
+
+https://stormpath.com/blog/jwt-java-create-verify
+
+/api/good/{id}
+
+* method GET
+* responses:
+  * 200 Ok 
+  * Body - json with information about good
+* errors: 404
+
+/api/good
+* method PUT
+* body: json with information about good that should be created
+* response: 201 Created with id of created good
+* errors: 409 Conflict (if information has wrong information, for example price of good is -9)
+
+/api/good/{id}
+* method POST
+* body: json with information that should be changed in already existed good
+* response: 204 No Content
+* errors: 404, 409
+
+/api/good/{id}
+* method DELETE
+* body: empty
+* response: 204 No Content
+* Errors: 404 Not found
