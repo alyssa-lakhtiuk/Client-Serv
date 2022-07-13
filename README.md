@@ -110,8 +110,8 @@ Labs for Client-server development
 * method POST
 * params: login, password in MD5 encoding
 * responses:
- * 200 Ok and Uniq token
- * 401 Unauthorized
+  * 200 Ok and Uniq token
+  * 401 Unauthorized
 
 Всі методи api мають викликатися з Auth токеном, що передається в хедерах запиту. Токен має бути перевірений на валідність. Якщо токен не валідний - повертати 403 помилку. Пропонується використати JWT:
 
