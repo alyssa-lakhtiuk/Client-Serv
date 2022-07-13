@@ -1,12 +1,22 @@
-package lab04.entity;
+package lab05.entity.base;
 
+import jakarta.persistence.*;
 import org.json.JSONObject;
 
+@Entity
+@Table(name = "category")
 public class Category {
-    private final int categoryId;
-    private final String categoryName;
 
-    private final String description;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int categoryId;
+    private String categoryName;
+
+    private String description;
+
+    public Category() {
+
+    }
 
     public String getCategoryName() {
         return categoryName;
@@ -20,9 +30,26 @@ public class Category {
         return description;
     }
 
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public Category(int categoryId, String categoryName, String description) {
         this.categoryName = categoryName;
         this.categoryId = categoryId;
+        this.description = description;
+    }
+
+    public Category(String categoryName, String description) {
+        this.categoryName = categoryName;
         this.description = description;
     }
 

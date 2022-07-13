@@ -1,7 +1,6 @@
-package lab04.entity.daos;
+package lab05.entity.daos;
 
-import lab04.DBConnection;
-import lab04.entity.Category;
+import lab05.entity.base.Category;
 import org.json.JSONObject;
 
 import java.sql.*;
@@ -15,16 +14,18 @@ public class CategoryDao implements IDao<Category> {
             "'name' text not null," +
             " 'description' text not null, unique(name))";
     private final String selectByIdQuery = "select * from 'category' where id = %s";
+    private final String selectByNameQuery = "select * from 'category' where name = \"%s\"";
     private final String selectAllQuery = "select * from 'category'";
     private final String insertQuery = "insert into 'category' ('id', 'name', 'description') values (?, ?, ?);";
+    private final String insertWithOutIdQuery = "insert into 'category' ('name', 'description') values (?, ?);";
     private final String updateQuery = "update 'category' set name = ?, description = ?  where id = ?";
     private final String deleteQuery = "delete from 'category' where id = ?";
     private final String dropQuery = "drop table 'category'";
 
     private final Connection connection;
 
-    public CategoryDao(DBConnection con) {
-        this.connection = con.getCon();
+    public CategoryDao(Connection con) {
+        this.connection = con;
         initTable();
     }
 
@@ -40,6 +41,20 @@ public class CategoryDao implements IDao<Category> {
     public Category getById(int id) {
         try (final Statement statement = connection.createStatement()) {
             final String sql = String.format(selectByIdQuery, id);
+            final ResultSet resultSet = statement.executeQuery(sql);
+            Category category = new Category(
+                    resultSet.getInt("id"),
+                    resultSet.getString("name"),
+                    resultSet.getString("description"));
+            return category;
+        } catch (SQLException e) {
+            throw new RuntimeException("Can't get category", e);
+        }
+    }
+
+    public Category getByName(String name) {
+        try (final Statement statement = connection.createStatement()) {
+            final String sql = String.format(selectByNameQuery, name);
             final ResultSet resultSet = statement.executeQuery(sql);
             Category category = new Category(
                     resultSet.getInt("id"),
@@ -73,11 +88,28 @@ public class CategoryDao implements IDao<Category> {
 
     @Override
     public int insert(Category category) {
+        if (category.getCategoryId() == 0){
+            return insertWithOutId(category);
+        }
         try (final PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
 
             insertStatement.setInt(1, category.getCategoryId());
             insertStatement.setString(2, category.getCategoryName());
             insertStatement.setString(3, category.getDescription());
+
+            insertStatement.execute();
+
+            return category.getCategoryId();
+        } catch (SQLException e) {
+            throw new RuntimeException("Can't insert category", e);
+        }
+    }
+
+    public int insertWithOutId(Category category) {
+        try (final PreparedStatement insertStatement = connection.prepareStatement(insertWithOutIdQuery)) {
+
+            insertStatement.setString(1, category.getCategoryName());
+            insertStatement.setString(2, category.getDescription());
 
             insertStatement.execute();
 

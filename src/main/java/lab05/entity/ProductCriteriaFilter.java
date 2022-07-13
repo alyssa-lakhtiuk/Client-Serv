@@ -1,4 +1,4 @@
-package lab04.entity;
+package lab05.entity;
 
 import java.util.List;
 

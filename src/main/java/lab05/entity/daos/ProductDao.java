@@ -1,8 +1,7 @@
-package lab04.entity.daos;
+package lab05.entity.daos;
 
-import lab04.DBConnection;
-import lab04.entity.Product;
-import lab04.entity.ProductCriteriaFilter;
+import lab05.entity.base.Product;
+import lab05.entity.ProductCriteriaFilter;
 import org.json.JSONObject;
 
 import java.sql.*;
@@ -14,22 +13,24 @@ import java.util.stream.Stream;
 public class ProductDao implements IDao<Product> {
     private final String initializeQuery = "create table if not exists 'product' " +
             "('id' INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            "'name' text not null, " +
+            "'name' text not null unique, " +
             "'price' decimal(10, 4) not null, " +
             "'quantity' decimal not null, " +
             "'description' text not null, " +
+            "'maker' text not null, " +
             "'category_id' integer not null, foreign key(category_id) references category(id) " +
             "ON UPDATE CASCADE ON DELETE CASCADE);";
-    private final String insertQuery = "insert into 'product'" + " ('name', 'price', 'quantity', 'description', 'category_id') values (?, ?, ?, ?, ?);";
-    private final String updateQuery = "update 'product' set name = ?, price = ?, quantity = ?, description = ?, category_id = ?  where id = ?";
+    private final String insertQuery = "insert into 'product'" + " ('name', 'price', 'quantity', 'description', 'category_id', 'maker') values (?, ?, ?, ?, ?, ?);";
+    private final String updateQuery = "update 'product' set name = ?, price = ?, quantity = ?, description = ?, category_id = ?, maker = ?  where id = ?";
     private final String deleteQuery = "delete from 'product' where id = ?";
     private final String selectByIdQuery = "select * from 'product' where id = %s";
+    private final String selectByNameQuery = "select * from 'product' where name = \"%s\"";
     private final String selectAllQuery = "select * from 'product'";
     private final String dropQuery = "drop table 'product'";
     private final Connection connection;
 
-    public ProductDao(DBConnection con) {
-        this.connection = con.getCon();
+    public ProductDao(Connection con) {
+        this.connection = con;
         initTable();
     }
 
@@ -54,7 +55,29 @@ public class ProductDao implements IDao<Product> {
                     resultSet.getString("name"),
                     resultSet.getInt("quantity"),
                     resultSet.getDouble("price"),
-                    resultSet.getString("description")
+                    resultSet.getString("description"),
+                    resultSet.getString("maker")
+            );
+            return product;
+        } catch (SQLException e) {
+            throw new RuntimeException("Can't get product", e);
+        }
+    }
+
+    public Product getByName(String name) {
+        try (final Statement statement = connection.createStatement()) {
+
+            final String sql = String.format(selectByNameQuery, name);
+            final ResultSet resultSet = statement.executeQuery(sql);
+
+            Product product = new Product(
+                    resultSet.getInt("id"),
+                    resultSet.getInt("category_id"),
+                    resultSet.getString("name"),
+                    resultSet.getInt("quantity"),
+                    resultSet.getDouble("price"),
+                    resultSet.getString("description"),
+                    resultSet.getString("maker")
             );
             return product;
         } catch (SQLException e) {
@@ -76,7 +99,8 @@ public class ProductDao implements IDao<Product> {
                         resultSet.getString("name"),
                         resultSet.getInt("quantity"),
                         resultSet.getDouble("price"),
-                        resultSet.getString("description")));
+                        resultSet.getString("description"),
+                        resultSet.getString("maker")));
             }
             return products;
         } catch (SQLException e) {
@@ -87,12 +111,12 @@ public class ProductDao implements IDao<Product> {
     @Override
     public int insert(Product product) {
         try (final PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
-
             insertStatement.setString(1, product.getName());
             insertStatement.setDouble(2, product.getPrice());
             insertStatement.setDouble(3, product.getQuantity());
             insertStatement.setString(4, product.getDescription());
-            insertStatement.setInt(5, product.getCategory());
+            insertStatement.setInt(5, product.getCategoryId());
+            insertStatement.setString(6, product.getMaker());
 
             insertStatement.execute();
             final ResultSet result = insertStatement.getGeneratedKeys();
@@ -110,8 +134,9 @@ public class ProductDao implements IDao<Product> {
             preparedStatement.setDouble(2, product.getPrice());
             preparedStatement.setDouble(3, product.getQuantity());
             preparedStatement.setString(4, product.getDescription());
-            preparedStatement.setInt(5, product.getCategory());
-            preparedStatement.setDouble(6, id);
+            preparedStatement.setInt(5, product.getCategoryId());
+            preparedStatement.setString(6, product.getMaker());
+            preparedStatement.setInt(7, id);
             preparedStatement.executeUpdate();
             return id;
         } catch (SQLException e) {
@@ -153,7 +178,8 @@ public class ProductDao implements IDao<Product> {
                         resultSet.getString("name"),
                         resultSet.getInt("quantity"),
                         resultSet.getDouble("price"),
-                        resultSet.getString("description")));
+                        resultSet.getString("description"),
+                        resultSet.getString("maker")));
             }
             return products;
         } catch (SQLException e) {

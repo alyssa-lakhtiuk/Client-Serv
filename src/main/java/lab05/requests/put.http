@@ -1,0 +1,21 @@
+### insert new product
+PUT http://localhost:8001/api/product
+Content-Type: application/json
+
+{
+  "name": "inserted product",
+  "quantity": 120,
+  "price": 156.5,
+  "description": "cool product",
+  "maker": "somebody",
+  "categoryId": 1
+}
+
+### insert new category
+PUT http://localhost:8001/api/category
+Content-Type: application/json
+
+{
+  "categoryName": "drink",
+  "description": "water"
+}

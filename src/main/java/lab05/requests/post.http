@@ -1,0 +1,36 @@
+### post with correct login and password
+POST http://localhost:8001/login
+Content-Type: application/json
+
+{
+  "login": "admin",
+  "password": "password"
+}
+
+### post with invalid password
+POST http://localhost:8001/login
+Content-Type: application/json
+
+{
+  "login": "admin",
+  "password": "secret"
+}
+
+### update product
+POST http://localhost:8001/api/product/1
+Content-Type: application/json
+
+{
+  "name": "updated product",
+  "quantity": 120,
+  "price": 156.5
+}
+
+### update category
+POST http://localhost:8001/api/category/0
+Content-Type: application/json
+
+{
+  "categoryName": "food2",
+  "description": "updated2"
+}

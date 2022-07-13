@@ -1,4 +1,4 @@
-package lab04.entity.daos;
+package lab05.entity.daos;
 
 import java.util.List;
 
